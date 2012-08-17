@@ -1,0 +1,76 @@
+﻿@using System.Web.Script.Serialization
+@model dynamic
+
+@{
+    ViewBag.Title = "Calculator";
+}
+
+<h2>Calculator</h2>
+<div id="types">
+    <div data-bind="foreach: types">
+        <h3>Name:<span data-bind="text:TypeName"></span></h3>
+        <table data-bind="foreach: Properties">
+            <tr>                
+                <td data-bind="click: AddProp"><span data-bind="text: $data"></span></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@Html.TextArea("Expression")
+<br/>
+<script src="../../Scripts/knockout-2.1.0.js" type="text/javascript"></script>
+<script src="../../Scripts/jquery-ui-1.8.22.js" type="text/javascript"></script>
+<h4>Result: <span id="result"></span></h4>
+<input type="button" id="btnCalc" value="Calculate"/>
+<script type="text/javascript">
+    var types = @Html.Raw(new JavaScriptSerializer().Serialize(Model));
+    var functions = [
+        'Abs',
+       'Acos',
+       'Asin',
+       'Atan',
+       'Ceiling',
+       'Cos',
+       'Exp',
+       'Floor',
+       'IEEERemainder',
+       'Log',
+       'Log10',
+       'Max',
+       'Min',
+       'Pow',
+       'Round',
+       'Sign',
+       'Sin',
+       'Sqrt',
+       'Tan',
+       'Truncate'	 	
+   ];
+   
+    $('#Expression').autocomplete({
+        minLength:0,
+        source : functions
+        });
+
+        $(document).ready(function () {
+            $('#btnCalc').click(function () {
+                var expression = $('#Expression').val();
+                $.post('/home/Calculate', { Calculation: expression }, function (data) {
+                    if (data.success === false) {
+                        alert(data.errors);
+                    }
+                    $('#result').text(data.result);
+                });
+            });
+        });
+
+        var model = {
+            types: types
+        };
+
+        function AddProp(data) {
+            $('#Expression').append('['+data+'] ');
+        }
+        ko.applyBindings(model);
+</script>
