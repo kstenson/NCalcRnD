@@ -28,7 +28,7 @@ namespace NCalcRnD.Tests
                 Contract = new Contract() { formula = "[ChargeElement.NetAmount] / [Bill.BillPeriod]" }
             };
                 Expression expression = new Expression(context.Contract.formula);
-           
+                expression.EvaluateParameter += ExpressionOnEvaluateParameter;
                 var regex = new Regex(@"\[(.*?)\]");
                 var parameters = regex.Matches(context.Contract.formula);
 
@@ -45,17 +45,22 @@ namespace NCalcRnD.Tests
                     propValue = propInfo.GetValue(propValue, null);
                 }
 
-                expression.Parameters[parameter.ToString()] = propValue;
+                expression.Parameters[name] = propValue;
 
 
             }
-
-            var result = expression.Evaluate();
-
-
+  
+            expression.Evaluate();
 
 
 
+
+
+        }
+
+        private void ExpressionOnEvaluateParameter(string name, ParameterArgs args)
+        {
+            throw new NotImplementedException();
         }
     }
 
