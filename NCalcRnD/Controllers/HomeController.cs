@@ -17,11 +17,11 @@ namespace NCalcRnD.Controllers
         {
             var Types = AppDomain.CurrentDomain.GetAssemblies().ToList()
                 .SelectMany(s => s.GetTypes())
-                .Where(p => typeof (IEntity).IsAssignableFrom(p))
+                .Where(p => typeof (IEntity).IsAssignableFrom(p) && !p.IsInterface)
                 .Select(type => new EntityDef()
                 {
                     TypeName = type.Name,
-                    Properties =type.GetProperties().Select(x => type.Name+"." + x.Name).ToList()
+                    Properties =type.GetProperties().Select(x=> new Properties(){Name = type.Name+"." + x.Name, Value = ""}).ToList()
                 }).ToList();
    
                                          
@@ -77,14 +77,19 @@ namespace NCalcRnD.Controllers
     {
     }
 
+    public class Properties
+    {
+        public string Name { get; set; }
+        public string Value { get; set; }
+    }
     public class EntityDef
     {
         public string TypeName { get; set; }
-        public List<string> Properties { get; set; }
+        public List<Properties> Properties { get; set; }
 
         public EntityDef()
         {
-            Properties = new List<string>();
+            Properties = new List<Properties>();
         }
     }
 }
