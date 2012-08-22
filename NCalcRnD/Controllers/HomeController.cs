@@ -15,7 +15,7 @@ namespace NCalcRnD.Controllers
 
         public ActionResult Index()
         {
-            var Types = AppDomain.CurrentDomain.GetAssemblies().ToList()
+            var types = AppDomain.CurrentDomain.GetAssemblies().ToList()
                 .SelectMany(s => s.GetTypes())
                 .Where(p => typeof (IEntity).IsAssignableFrom(p) && !p.IsInterface)
                 .Select(type => new EntityDef()
@@ -26,7 +26,7 @@ namespace NCalcRnD.Controllers
    
                                          
                                  
-            return View(Types);
+            return View(types);
         }
 
         public ActionResult Calculate(string calculation)
